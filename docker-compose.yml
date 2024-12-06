@@ -1,0 +1,103 @@
+version: "3.8"
+services:
+  api-gateway:
+    build:
+      context: ./gateway
+    ports:
+      - "8080:8080"
+    depends_on:
+      - users
+      - products
+#    environment:
+#      - JWT_SECRET=your_jwt_secret
+#      - OAUTH2_CONFIG=your_oauth2_config
+    networks:
+      - backend
+
+  users:
+    build:
+      context: ./users
+    ports:
+      - "8081:8081"
+##    environment:
+##      - MONGO_URI=mongodb://mongo:27017/usersdb
+#    depends_on:
+#      - mongo
+    networks:
+      - backend
+
+  products:
+    build:
+      context: ./products
+    ports:
+      - "8082:8082"
+#    environment:
+#      - MSSQL_URI=sqlserver://mssql:1433;database=productsdb
+#    depends_on:
+#      - mssql
+    networks:
+      - backend
+
+#  task-queue:
+#    build:
+#      context: ./task-queue
+#    environment:
+#      - CELERY_BROKER_URL=amqp://rabbitmq
+#      - CELERY_RESULT_BACKEND=rpc://
+#    depends_on:
+#      - rabbitmq
+#    networks:
+#      - backend
+#
+#  analytics:
+#    build:
+#      context: ./analytics
+#    ports:
+#      - "8083:8083"
+#    depends_on:
+#      - users
+#      - products
+#    networks:
+#      - backend
+#
+#  swagger-ui:
+#    image: swaggerapi/swagger-ui
+#    ports:
+#      - "8084:8080"
+#    environment:
+#      - SWAGGER_JSON=/docs/swagger.yaml
+#    volumes:
+#      - ./docs:/docs
+#    networks:
+#      - backend
+
+  mongo:
+    image: mongo:latest
+    container_name: mongo
+    ports:
+      - "27017:27017"
+    networks:
+      - backend
+
+  mssql:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: mssql
+    ports:
+      - "1433:1433"
+    environment:
+      SA_PASSWORD: "YourStrong@Passw0rd"
+      ACCEPT_EULA: "Y"
+    networks:
+      - backend
+
+  rabbitmq:
+    image: rabbitmq:management
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+    networks:
+      - backend
+
+networks:
+  backend:
+    driver: bridge
