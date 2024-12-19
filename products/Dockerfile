@@ -22,7 +22,7 @@ WORKDIR /app
 COPY --from=build /app/build/libs/products-0.0.1-SNAPSHOT.jar ./products.jar
 
 # Expondo a porta para o serviço
-EXPOSE 8081
+EXPOSE 8082
 
 # Comando para iniciar a aplicação
 ENTRYPOINT ["java", "-jar", "products.jar"]

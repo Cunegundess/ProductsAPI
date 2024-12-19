@@ -8,21 +8,49 @@ services:
     depends_on:
       - users
       - products
-#    environment:
-#      - JWT_SECRET=your_jwt_secret
-#      - OAUTH2_CONFIG=your_oauth2_config
+    #    environment:
+    #      - JWT_SECRET=your_jwt_secret
+    #      - OAUTH2_CONFIG=your_oauth2_config
     networks:
       - backend
+
+  #   users:
+  #     build:
+  #       context: ./users
+  #       dockerfile: Dockerfile
+  # #    develop:
+  # #      watch:
+  # #        - action: sync
+  # #          path: ./users/
+  # #          target: /app/src
+  #     volumes:
+  #       - ./users/src:/app/src
+  #       - ./users/build.gradle:/app/build.gradle
+  #     environment:
+  #       - SPRING_PROFILES_ACTIVE=dev
+  #     ports:
+  #       - "8081:8081"
+  #     depends_on:
+  #       - mongo
+  #     networks:
+  #       - backend
 
   users:
     build:
       context: ./users
+      dockerfile: Dockerfile
+    volumes:
+      - ./users/src:/app/src
+      - ./users/build.gradle:/app/build.gradle
+      - ./users/settings.gradle:/app/settings.gradle
+      - ./users/gradle:/app/gradle
+      - ~/.gradle:/home/gradle/.gradle # Cache do Gradle
     ports:
       - "8081:8081"
-##    environment:
-##      - MONGO_URI=mongodb://mongo:27017/usersdb
-#    depends_on:
-#      - mongo
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+    depends_on:
+      - mongo
     networks:
       - backend
 
@@ -31,45 +59,45 @@ services:
       context: ./products
     ports:
       - "8082:8082"
-#    environment:
-#      - MSSQL_URI=sqlserver://mssql:1433;database=productsdb
-#    depends_on:
-#      - mssql
+    #    environment:
+    #      - MSSQL_URI=sqlserver://mssql:1433;database=productsdb
+    #    depends_on:
+    #      - mssql
     networks:
       - backend
 
-#  task-queue:
-#    build:
-#      context: ./task-queue
-#    environment:
-#      - CELERY_BROKER_URL=amqp://rabbitmq
-#      - CELERY_RESULT_BACKEND=rpc://
-#    depends_on:
-#      - rabbitmq
-#    networks:
-#      - backend
-#
-#  analytics:
-#    build:
-#      context: ./analytics
-#    ports:
-#      - "8083:8083"
-#    depends_on:
-#      - users
-#      - products
-#    networks:
-#      - backend
-#
-#  swagger-ui:
-#    image: swaggerapi/swagger-ui
-#    ports:
-#      - "8084:8080"
-#    environment:
-#      - SWAGGER_JSON=/docs/swagger.yaml
-#    volumes:
-#      - ./docs:/docs
-#    networks:
-#      - backend
+  #  task-queue:
+  #    build:
+  #      context: ./task-queue
+  #    environment:
+  #      - CELERY_BROKER_URL=amqp://rabbitmq
+  #      - CELERY_RESULT_BACKEND=rpc://
+  #    depends_on:
+  #      - rabbitmq
+  #    networks:
+  #      - backend
+  #
+  #  analytics:
+  #    build:
+  #      context: ./analytics
+  #    ports:
+  #      - "8083:8083"
+  #    depends_on:
+  #      - users
+  #      - products
+  #    networks:
+  #      - backend
+  #
+  #  swagger-ui:
+  #    image: swaggerapi/swagger-ui
+  #    ports:
+  #      - "8084:8080"
+  #    environment:
+  #      - SWAGGER_JSON=/docs/swagger.yaml
+  #    volumes:
+  #      - ./docs:/docs
+  #    networks:
+  #      - backend
 
   mongo:
     image: mongo:latest

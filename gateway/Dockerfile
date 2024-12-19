@@ -22,7 +22,7 @@ WORKDIR /app
 COPY --from=build /app/build/libs/gateway-0.0.1-SNAPSHOT.jar ./gateway.jar
 
 # Expondo a porta para o serviço
-EXPOSE 8081
+EXPOSE 8080
 
 # Comando para iniciar a aplicação
 ENTRYPOINT ["java", "-jar", "gateway.jar"]
